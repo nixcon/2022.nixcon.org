@@ -13,6 +13,10 @@ import Hakyll.Web.Sass      ( sassCompiler )
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
+    match "CNAME" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "favicon.png" $ do
         route idRoute
         compile copyFileCompiler
@@ -26,10 +30,6 @@ main = hakyll $ do
         compile $ loadImage
             >>= scaleImageCompiler 1200 450
             >>= compressJpgCompiler 90
-
-    match "googlead1fe7ef91f639f7.html" $ do
-        route   idRoute
-        compile copyFileCompiler
 
     match "*.json" $ do
         route   idRoute
