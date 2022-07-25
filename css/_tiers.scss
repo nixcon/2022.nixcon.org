@@ -1,0 +1,139 @@
+$fg: #404040;
+$bg: #F2F2F2;
+
+// Tier colors
+$bronze: #AD8A56;
+$silver: #C0C0C0;
+$gold: #D4AF37;
+$platinum: #E5E4E2;
+
+$card-break-1: 620px; // 1 column
+$card-break-2: 900px; // 2 column (except plat)
+//             > that    3 column (except plat)
+
+.sponsors {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  justify-content: center;
+
+  @media screen and (max-width: $card-break-1){
+    grid-template-columns: minmax(200px, 400px)!important;
+  }
+  @media screen and (max-width: $card-break-2){
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+
+}
+
+.sponsors.platinum {
+  grid-template-columns: minmax(300px, 1fr)!important;
+}
+
+.sponsor-card {
+  background-color: $bg;
+  border-radius: 0.1rem;
+  color: $fg;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  a {
+    color: $fg!important;
+  }
+  .sponsor-title {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem;
+    img {
+      max-height: 100px;
+      width: auto;
+    }
+  }
+  .sponsor-description {
+    margin: 0.5rem;
+  }
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+.sponsor-card .card-body {
+  padding: 1rem;
+}
+
+.platinum .sponsor-card {
+  border-top: solid $platinum;
+  .sponsor-title {
+    img {
+      max-height: 130px;
+    }
+  }
+}
+.gold .sponsor-card {
+  border-top: solid $gold;
+  .sponsor-title {
+    height: 4em;
+    img {
+      height: 100%;
+    }
+  }
+}
+.silver .sponsor-card {
+  border-top: solid $silver;
+  .sponsor-title {
+    height: 3em;
+    img {
+      height: 100%;
+    }
+  }
+}
+.bronze .sponsor-card {
+  background-color: unset;
+  .sponsor-title {
+    img {
+      max-height: 65px;
+    }
+  }
+}
+
+// 'sponsoring' specific styling
+
+// remove list style specifically on
+// sponsoring info requirements listing
+.unlist {
+  list-style: none;
+}
+
+#sponsoring .sponsors {
+  grid-template-columns: minmax(300px, 1fr)!important;
+}
+
+.platinum.sponsor-card {
+  h4 {
+    font-size: 1.4em;
+  }
+  border: thick solid $platinum;
+}
+
+.gold.sponsor-card {
+  h4 {
+    font-size: 1.3em;
+  }
+  border: solid $gold;
+}
+
+.silver.sponsor-card {
+  h4 {
+    font-size: 1.2em;
+  }
+  border: solid $silver;
+}
+
+.bronze.sponsor-card {
+  h4 {
+    font-size: 1.1em;
+  }
+  border: solid $bronze;
+}

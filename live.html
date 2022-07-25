@@ -1,0 +1,88 @@
+<section class="section-dark">
+    <div class="container">
+        <h3>NixCon Live</h3>
+        <div id="player-container">
+            <video src="https://dash.nixcon.net/dash/master.m3u8" id="player" controls></video>
+            <iframe src="https://kiwiirc.com/client/irc.freenode.net/?nick=nixer|?&theme=basic#nixcon"></iframe>
+        </div>
+        <div id="bandwidth-control"></div>
+        <br />
+        <div class="container" style="position:relative; text-align: center;">
+            <p>To watch the stream from VLC on your computer, run:<p>
+            <code>nix-shell --packages vlc --run "vlc https://dash.nixcon.net/dash/master.m3u8"</code>
+            <p>or (macOS users try this one):<p>
+            <code>nix-shell --packages mpv --run "mpv https://dash.nixcon.net/dash/master.m3u8"</code>
+            <p>The stream will be broadcast <a href="https://www.youtube.com/channel/UCjqkNrQ8F3OhKSCfCgagWLg">to YouTube</a> as well, for devices where watching this version does not work.<p>
+        </div>
+            <div class="container">
+                <p>Between sessions, join the breakout rooms on Jitsi!        
+                    <a href="https://cryptpad.piratenpartei.de/code/#/2/code/edit/nNNcnWiDb1S0EYH3fTYo+FoM/">
+                        Look at the list of announced rooms or add your own.
+                    </a>
+                </p>
+            </div>
+    </div>
+</section>
+
+<script src="/js/dash.mediaplayer.min.js"></script>
+<script>
+    var baseUrl = "https://dash.nixcon.net/dash/";
+    var playerElem = document.getElementById("player");
+    if (('WebkitMediaSource' in window) || ('MediaSource' in window)) {
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(playerElem, baseUrl + "main.mpd", false);
+        player.updateSettings({
+            streaming: { lowLatencyEnabled: true, liveDelay: 10, liveCatchupLatencyThreshold: 20, liveCatchUpPlaybackRate: 0.2 }
+        });
+
+        var options = [
+            { name: "auto", autoSwitch: true },
+            { name: "720p", autoSwitch: false, index: 1 },
+            { name: "480p", autoSwitch: false, index: 0 },
+        ];
+
+        select = document.createElement("select");
+
+        select.addEventListener("change", function(e) {
+          var option = options[select.value];
+
+          player.updateSettings({
+            streaming: { abr: { autoSwitchBitrate: { video: option.autoSwitch } } }
+          });
+
+          if (!option.autoSwitch) {
+              player.setQualityFor('video', option.index);
+          }
+        });
+
+        for (var i = 0; i < options.length; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.innerText = options[i].name;
+
+            select.appendChild(option);
+        }
+
+        document.getElementById("bandwidth-control").appendChild(select);
+
+        player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function() {
+            var currentMode = player.getQualityFor("video");
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].index == currentMode) {
+                    select.options[0].innerText = `auto (${options[i].name})`;
+                    break;
+                }
+            }
+        });
+
+        var currentAvailabilityStart = null;
+        player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function(e) {
+            if (currentAvailabilityStart != null && e.data.availabilityStartTime.getTime() != currentAvailabilityStart.getTime()) {
+                // Stream restarted. Let's reload the page.
+                window.location.reload();
+            }
+
+            currentAvailabilityStart = e.data.availabilityStartTime;
+        });
+    }
+</script>
