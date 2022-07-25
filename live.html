@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NixCon 2022 - A conference about Nix and NixOS</title>
+  <meta name="description" content="NixCon 2022 - A conference about Nix and NixOS">
+  <meta name="keywords" content="london, linux, nix, nixos, conference">
+  <link type="text/css" rel="stylesheet" href="css/default.css" media="screen,projection" />
+  <script type="text/javascript" src="js/index.js" async></script>
+  <link rel="shortcut icon" type="image/png" href="./favicon.png" />
+  <link rel="stylesheet" type="text/css" href="https://cfp.nixcon.org/nixcon2022/schedule/widget/v1.css">
+  <script type="text/javascript" src="https://cfp.nixcon.org/nixcon2022/schedule/widget/v1.en.js" async></script>
+</head>
+
+<body>
+  <nav>
+    <div class="mobile-control">
+      <button onclick="toggleNav()">Menu</button>
+    </div>
+    <ul id="nav">
+      <li>
+        <a href="./">Home</a>
+      </li>
+      <li>
+        <a href="./#location">Location</a>
+      </li>
+      <li>
+        <a href="./#program">Program</a>
+      </li>
+      <li>
+        <a href="./#hackday">Hackday</a>
+      </li>
+      <li>
+        <a href="./#sponsors">Sponsors</a>
+      </li>
+      <li>
+        <a href="https://2022.nixcon.org/faq.html" target="_blank">FAQ</a>
+      </li>
+      <li>
+        <a href="./#contact">Contact us</a>
+      </li>
+    </ul>
+    </div>
+  </nav>
+  <a class="ribbon" href="https://github.com/nixcon/2022.nixcon.org">
+    <img class="ribbon" style="position: absolute; top: 0; right: 0; border: 0; z-index: 9000;" src="images/fork-me-on-github.png" alt="Fork me on GitHub">
+  </a>
+  <main>
+    <section class="section-dark">
+    <div class="container">
+        <h3>NixCon Live</h3>
+        <div id="player-container">
+            <video src="https://dash.nixcon.net/dash/master.m3u8" id="player" controls></video>
+            <iframe src="https://kiwiirc.com/client/irc.freenode.net/?nick=nixer|?&theme=basic#nixcon"></iframe>
+        </div>
+        <div id="bandwidth-control"></div>
+        <br />
+        <div class="container" style="position:relative; text-align: center;">
+            <p>To watch the stream from VLC on your computer, run:<p>
+            <code>nix-shell --packages vlc --run "vlc https://dash.nixcon.net/dash/master.m3u8"</code>
+            <p>or (macOS users try this one):<p>
+            <code>nix-shell --packages mpv --run "mpv https://dash.nixcon.net/dash/master.m3u8"</code>
+            <p>The stream will be broadcast <a href="https://www.youtube.com/channel/UCjqkNrQ8F3OhKSCfCgagWLg">to YouTube</a> as well, for devices where watching this version does not work.<p>
+        </div>
+            <div class="container">
+                <p>Between sessions, join the breakout rooms on Jitsi!        
+                    <a href="https://cryptpad.piratenpartei.de/code/#/2/code/edit/nNNcnWiDb1S0EYH3fTYo+FoM/">
+                        Look at the list of announced rooms or add your own.
+                    </a>
+                </p>
+            </div>
+    </div>
+</section>
+
+<script src="./js/dash.mediaplayer.min.js"></script>
+<script>
+    var baseUrl = "https://dash.nixcon.net/dash/";
+    var playerElem = document.getElementById("player");
+    if (('WebkitMediaSource' in window) || ('MediaSource' in window)) {
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(playerElem, baseUrl + "main.mpd", false);
+        player.updateSettings({
+            streaming: { lowLatencyEnabled: true, liveDelay: 10, liveCatchupLatencyThreshold: 20, liveCatchUpPlaybackRate: 0.2 }
+        });
+
+        var options = [
+            { name: "auto", autoSwitch: true },
+            { name: "720p", autoSwitch: false, index: 1 },
+            { name: "480p", autoSwitch: false, index: 0 },
+        ];
+
+        select = document.createElement("select");
+
+        select.addEventListener("change", function(e) {
+          var option = options[select.value];
+
+          player.updateSettings({
+            streaming: { abr: { autoSwitchBitrate: { video: option.autoSwitch } } }
+          });
+
+          if (!option.autoSwitch) {
+              player.setQualityFor('video', option.index);
+          }
+        });
+
+        for (var i = 0; i < options.length; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.innerText = options[i].name;
+
+            select.appendChild(option);
+        }
+
+        document.getElementById("bandwidth-control").appendChild(select);
+
+        player.on(dashjs.MediaPlayer.events.QUALITY_CHANGE_REQUESTED, function() {
+            var currentMode = player.getQualityFor("video");
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].index == currentMode) {
+                    select.options[0].innerText = `auto (${options[i].name})`;
+                    break;
+                }
+            }
+        });
+
+        var currentAvailabilityStart = null;
+        player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, function(e) {
+            if (currentAvailabilityStart != null && e.data.availabilityStartTime.getTime() != currentAvailabilityStart.getTime()) {
+                // Stream restarted. Let's reload the page.
+                window.location.reload();
+            }
+
+            currentAvailabilityStart = e.data.availabilityStartTime;
+        });
+    }
+</script>
+
+  </main>
+  <svg class="divider divider-top" viewBox="0 0 1920 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1920 31.7527C1638.36 11.5721 1310.26 0 960 0C609.741 0 281.642 11.5721 0 31.7527V50H1920V31.7527Z" fill="#5277C3"></path>
+  </svg>
+  <footer>
+    <div class="container">
+      Contact:
+      <a class="contact-email" href="mail:orgateam(at)nixcon.org">orgateam (at) nixcon.org</a> -
+      <a class="grey-text text-lighten-4 right" href="code-of-conduct.html">Code of Conduct</a>
+      <p>
+      Previous NixCons:
+      <a href="http://2020.nixcon.org/">2020</a> -
+      <a href="http://2019.nixcon.org/">2019</a> -
+      <a href="http://nixcon2018.org/">2018</a> -
+      <a href="http://nixcon2017.org/">2017</a> -
+      <a href="https://nixos.github.io/nixcon/2015/index.html">2015</a>
+      </p>
+      <p>
+      <a href="https://github.com/nixcon/2022.nixcon.org">
+      Edit this site on github
+      </a>
+      </p>
+    </div>
+  </footer>
+</body>
+
+</html>
