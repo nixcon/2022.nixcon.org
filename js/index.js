@@ -1,5 +1,5 @@
 function emailReplace(elems) {
-  var m = "orgateam" + String.fromCharCode(64) + "nixcon.org";
+  var m = "2022" + String.fromCharCode(64) + "nixcon.org";
   elems.getAttribute("href", "mailto:" + m)
   elems.textContent = m
 }
