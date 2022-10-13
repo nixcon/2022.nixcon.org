@@ -259,6 +259,16 @@ main {
   }
 }
 
+.logo-container {
+  display: flex;
+  flex-flow: row wrap;
+
+  img {
+    height: 6rem;
+    margin: 10px;
+  }
+}
+
 #irc-widget {
   background-color: transparent;
   border: none;
