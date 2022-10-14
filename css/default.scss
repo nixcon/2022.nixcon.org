@@ -262,10 +262,17 @@ main {
 .logo-container {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-between;
 
   img {
     height: 6rem;
     margin: 10px;
+    margin-top: 10px !important;
+    background-color: #fafafa;
+    border-radius: 10px;
+    border: 15px solid #fafafa;
+  }
+  img:first-child {
   }
 }
 
