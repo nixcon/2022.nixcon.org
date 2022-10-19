@@ -382,6 +382,10 @@ section {
   box-shadow: 0 0 0.5em $blue!important;
 }
 
+section.section-dark .pretalx-schedule {
+  color: #404040;
+}
+
 // bandwidth indicator on the live page
 #bandwidth-control {
   float: left;
